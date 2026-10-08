@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load ui static %}
+{% block title %}Buyurtma #{{ order.pk }}{% endblock %}
+{% block body_class %}order-body{% endblock %}
+{% block header %}
+<header class="topbar topbar--compact">
+  <div class="topbar__brand">
+    <a class="backbtn" href="{% url 'sector_detail' order.table.section_id %}" aria-label="Orqaga">‹</a>
+    <div>
+      <div class="brand">{{ order.table.label }}</div>
+      <div class="brand-sub">Buyurtma #{{ order.pk }} · <span id="order-status">{{ order.get_status_display }}</span></div>
+    </div>
+  </div>
+  <nav class="topbar__nav"><a class="linkbtn" href="{% url 'my_orders' %}">Buyurtmalarim</a></nav>
+</header>
+{% endblock %}
+{% block content %}
+{% if categories %}
+<nav class="chips" id="chips">
+  {% for c in categories %}<a href="#cat-{{ c.pk }}" class="chip-link">{{ c.name }}</a>{% endfor %}
+</nav>
+{% for c in categories %}
+<section id="cat-{{ c.pk }}" class="menu-section">
+  <h2 class="section-title">{{ c.name }}</h2>
+  <div class="product-grid">
+    {% for p in c.products.all %}
+    <button type="button" class="product" data-product="{{ p.pk }}" {% if not payload.editable %}disabled{% endif %}>
+      <div class="product__img">
+        {% if p.image %}<img src="{{ p.image.url }}" alt="{{ p.name }}" loading="lazy">{% else %}<span class="placeholder">{{ p.name|slice:":1"|upper }}</span>{% endif %}
+        <span class="product__add">+</span>
+      </div>
+      <div class="product__body">
+        <div class="product__name">{{ p.name }}</div>
+        {% if p.description %}<div class="product__desc">{{ p.description|truncatechars:48 }}</div>{% endif %}
+        <div class="product__price">{{ p.price|money }} so‘m <small>/ {{ p.unit }}</small></div>
+      </div>
+    </button>
+    {% endfor %}
+  </div>
+</section>
+{% endfor %}
+{% else %}
+<div class="empty"><p>Menyu bo‘sh. Administrator mahsulot qo‘shishi kerak.</p></div>
+{% endif %}
+
+<div class="cartbar" id="cartbar">
+  <button type="button" class="cartbar__btn" id="open-cart">
+    <span>Savat · <b id="cart-count">0</b> ta</span>
+    <span><b id="cart-total">0</b> so‘m</span>
+  </button>
+</div>
+
+<div class="sheet-backdrop" id="backdrop"></div>
+<aside class="sheet" id="sheet" aria-hidden="true">
+  <div class="sheet__head">
+    <div><div class="sheet__title">BUYURTMA #{{ order.pk }}</div><div class="muted">{{ order.table.label }}</div></div>
+    <button type="button" class="iconbtn" id="close-cart" aria-label="Yopish">×</button>
+  </div>
+  <div class="sheet__body" id="cart-items"></div>
+  <div class="sheet__foot">
+    <div class="total"><span>JAMI:</span><b id="sheet-total">0</b></div>
+    <div class="toast" id="toast" role="alert"></div>
+    <button type="button" class="btn btn--gold btn--block btn--xl" id="send-btn">BUYURTMANI YUBORISH</button>
+    <div class="sheet__actions">
+      <button type="button" class="btn btn--ghost" id="pay-btn">Hisob so‘rash</button>
+      <button type="button" class="btn btn--ghost btn--danger" id="cancel-btn">Bekor qilish</button>
+    </div>
+  </div>
+</aside>
+{{ payload|json_script:"order-data" }}
+{% endblock %}
+{% block scripts %}
+<script>
+  window.ORDER_URLS = {
+    add: "{% url 'order_add' order.pk %}",
+    send: "{% url 'order_send' order.pk %}",
+    pay: "{% url 'order_request_payment' order.pk %}",
+    cancel: "{% url 'order_cancel' order.pk %}",
+    itemBase: "/order/{{ order.pk }}/item/"
+  };
+</script>
+<script src="{% static 'js/order.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% load static ui %}<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#1c1612">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <title>{% block title %}{{ RESTAURANT_NAME }}{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+{% block header %}
+<header class="topbar">
+  <div class="topbar__brand">
+    {% block back %}{% endblock %}
+    <div>
+      <div class="brand">{{ RESTAURANT_NAME }}</div>
+      <div class="brand-sub">{% block subtitle %}{% endblock %}</div>
+    </div>
+  </div>
+  {% if user.is_authenticated %}
+  <nav class="topbar__nav">
+    {% block nav %}{% endblock %}
+    <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="linkbtn" type="submit">Chiqish</button></form>
+  </nav>
+  {% endif %}
+</header>
+{% endblock %}
+{% if messages %}
+<div class="flash-wrap">
+  {% for message in messages %}<div class="flash flash--{{ message.level_tag }}">{{ message }}</div>{% endfor %}
+</div>
+{% endif %}
+<main class="page">{% block content %}{% endblock %}</main>
+{% block scripts %}{% endblock %}
+</body>
+</html>

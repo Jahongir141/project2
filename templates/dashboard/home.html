@@ -1,0 +1,24 @@
+{% extends "dashboard/base_dash.html" %}
+{% load ui %}
+{% block subtitle %}Administrator{% endblock %}
+{% block l1 %}{% endblock %}
+{% block dash %}
+<div class="stats">
+  <div class="card stat"><div class="stat__v">{{ orders_today }}</div><div class="stat__l">Bugungi buyurtmalar</div></div>
+  <div class="card stat"><div class="stat__v">{{ revenue_today|money }}</div><div class="stat__l">Bugungi tushum (so‘m)</div></div>
+  <div class="card stat"><div class="stat__v">{{ active_orders }}</div><div class="stat__l">Faol buyurtmalar</div></div>
+  <div class="card stat"><div class="stat__v">{{ busy_tables }}</div><div class="stat__l">Band joylar</div></div>
+</div>
+<div class="card panel">
+  <h2>Ofitsiantlar</h2>
+  <table class="tbl"><tr><th>Ism</th><th class="r">Bugun</th><th class="r">Faol</th></tr>
+  {% for w in waiters %}<tr><td>{{ w.display_name }}</td><td class="r">{{ w.today_orders }}</td><td class="r">{{ w.active_now }}</td></tr>
+  {% empty %}<tr><td colspan="3" class="muted">Ofitsiantlar yo‘q</td></tr>{% endfor %}</table>
+</div>
+<div class="card panel">
+  <h2>Eng ko‘p sotilgan (30 kun)</h2>
+  <table class="tbl"><tr><th>Mahsulot</th><th class="r">Soni</th><th class="r">Summa</th></tr>
+  {% for p in top_products %}<tr><td>{{ p.product_name }}</td><td class="r">{{ p.qty }}</td><td class="r">{{ p.revenue|money }}</td></tr>
+  {% empty %}<tr><td colspan="3" class="muted">Ma’lumot yo‘q</td></tr>{% endfor %}</table>
+</div>
+{% endblock %}

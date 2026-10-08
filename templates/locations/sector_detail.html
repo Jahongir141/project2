@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}{{ section.name }}{% endblock %}
+{% block subtitle %}{{ section.name }}{% endblock %}
+{% block back %}<a class="backbtn" href="{% url 'sectors' %}" aria-label="Orqaga">‹</a>{% endblock %}
+{% block nav %}<a class="linkbtn" href="{% url 'my_orders' %}">Buyurtmalarim</a>{% endblock %}
+{% block content %}
+<h1 class="section-title">{{ section.name|upper }}</h1>
+<ul class="legend">
+  {% for key, text in legend.items %}<li><i class="dot dot--{{ key }}"></i>{{ text }}</li>{% endfor %}
+</ul>
+<div class="table-grid">
+  {% for cell in cells %}
+  <form method="post" action="{% url 'open_table' cell.table.pk %}">
+    {% csrf_token %}
+    <button type="submit" class="table-btn table-btn--{{ cell.state }}{% if cell.order and not cell.mine and not user.is_admin_role %} is-foreign{% endif %}" title="{{ cell.label }}">
+      <span class="table-btn__name">{{ cell.table.name }}</span>
+      <span class="table-btn__state">{{ cell.label }}</span>
+      {% if cell.order %}<span class="table-btn__waiter">{{ cell.order.waiter.display_name }}</span>{% endif %}
+    </button>
+  </form>
+  {% empty %}
+  <div class="empty"><p>Bu sektorda faol joylar yo‘q.</p></div>
+  {% endfor %}
+</div>
+{% endblock %}

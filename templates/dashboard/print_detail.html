@@ -1,0 +1,8 @@
+{% extends "dashboard/base_dash.html" %}
+{% block subtitle %}Chek ko‘rinishi{% endblock %}
+{% block l3 %}{% endblock %}
+{% block dash %}
+<p class="muted">Buyurtma #{{ job.order_id }} · {{ job.station|default:"Umumiy" }} · {{ job.get_status_display }}{% if job.error %} · {{ job.error }}{% endif %}</p>
+<div class="receipt">{{ job.content }}</div>
+<p><a class="btn btn--sm btn--ghost" href="{% url 'dashboard:prints' %}">‹ Orqaga</a></p>
+{% endblock %}

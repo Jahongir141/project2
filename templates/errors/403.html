@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Ruxsat yo‘q{% endblock %}
+{% block subtitle %}Ruxsat yo‘q{% endblock %}
+{% block nav %}{% if user.is_authenticated %}<a class="linkbtn" href="{% url 'home' %}">Bosh sahifa</a>{% endif %}{% endblock %}
+{% block content %}
+<div class="empty">
+  <h1>Ruxsat yo‘q</h1>
+  <p>Bu sahifani ko‘rish yoki buyurtmani o‘zgartirish huquqingiz yo‘q.</p>
+  <a class="btn btn--gold" href="{% url 'home' %}">Bosh sahifaga qaytish</a>
+</div>
+{% endblock %}

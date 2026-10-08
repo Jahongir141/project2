@@ -1,0 +1,12 @@
+{% extends "dashboard/base_dash.html" %}
+{% block subtitle %}Cheklar{% endblock %}
+{% block l3 %}{% endblock %}
+{% block dash %}
+<h2 class="section-title">So‘nggi cheklar (print preview)</h2>
+{% for j in jobs %}
+<a class="card order-row" href="{% url 'dashboard:print_detail' j.pk %}">
+  <div><strong>#{{ j.order_id }}</strong> · {{ j.station|default:"Umumiy" }}<div class="muted">{{ j.created_at|date:"d.m H:i" }}{% if j.printer %} · {{ j.printer.name }}{% endif %}</div></div>
+  <span class="chip">{{ j.get_status_display }}</span>
+</a>
+{% empty %}<div class="empty"><p>Hali chek yo‘q.</p></div>{% endfor %}
+{% endblock %}

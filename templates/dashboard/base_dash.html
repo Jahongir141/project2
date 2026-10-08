@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block nav %}<a class="linkbtn" href="{% url 'sectors' %}">Ofitsiant paneli</a><a class="linkbtn" href="/admin/">Admin</a>{% endblock %}
+{% block content %}
+<div class="admin-links">
+  <a class="btn btn--sm {% block l1 %}btn--ghost{% endblock %}" href="{% url 'dashboard:home' %}">Dashboard</a>
+  <a class="btn btn--sm {% block l2 %}btn--ghost{% endblock %}" href="{% url 'dashboard:orders' %}">Buyurtmalar</a>
+  <a class="btn btn--sm {% block l3 %}btn--ghost{% endblock %}" href="{% url 'dashboard:prints' %}">Cheklar</a>
+</div>
+{% block dash %}{% endblock %}
+{% endblock %}

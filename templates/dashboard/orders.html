@@ -1,0 +1,31 @@
+{% extends "dashboard/base_dash.html" %}
+{% load ui %}
+{% block subtitle %}Buyurtmalar{% endblock %}
+{% block l2 %}{% endblock %}
+{% block dash %}
+<h2 class="section-title">Faol buyurtmalar</h2>
+{% for o in active %}
+<div class="card order-card">
+  <div class="order-card__head">
+    <div><strong>#{{ o.pk }}</strong> · {{ o.table.label }}<div class="muted">{{ o.waiter.display_name }} · {{ o.created_at|time:"H:i" }}</div></div>
+    <span class="chip chip--{{ o.table_state }}">{% if o.payment_requested %}To‘lov kutilmoqda{% else %}{{ o.get_status_display }}{% endif %}</span>
+  </div>
+  <table class="tbl">
+    {% for i in o.items.all %}{% if i.status != "CANCELLED" %}<tr><td>{{ i.product_name }}{% if i.note %}<div class="muted">{{ i.note }}</div>{% endif %}</td><td class="r">{{ i.quantity }} × {{ i.unit_price|money }}</td><td class="r"><span class="chip chip--{{ i.status }}">{{ i.get_status_display }}</span></td></tr>{% endif %}{% endfor %}
+    <tr><td><strong>Jami</strong></td><td></td><td class="r"><strong>{{ o.total|money }}</strong></td></tr>
+  </table>
+  <div class="order-card__actions">
+    <form method="post" action="{% url 'dashboard:order_action' o.pk 'ready' %}">{% csrf_token %}<button class="btn btn--sm btn--ghost">Hammasi tayyor</button></form>
+    <form method="post" action="{% url 'dashboard:order_action' o.pk 'pay' %}" style="display:flex;gap:6px">{% csrf_token %}
+      <select name="method">{% for value, label in methods %}<option value="{{ value }}">{{ label }}</option>{% endfor %}</select>
+      <button class="btn btn--sm btn--gold">To‘lov qabul qilish</button>
+    </form>
+    <form method="post" action="{% url 'dashboard:order_action' o.pk 'cancel' %}" onsubmit="return confirm('Buyurtma bekor qilinsinmi?')">{% csrf_token %}<button class="btn btn--sm btn--ghost btn--danger">Bekor qilish</button></form>
+  </div>
+</div>
+{% empty %}<div class="empty"><p>Faol buyurtma yo‘q.</p></div>{% endfor %}
+<h2 class="section-title">So‘nggi yopilganlar</h2>
+{% for o in recent %}
+<div class="card order-row order-row--closed"><div><strong>#{{ o.pk }}</strong> · {{ o.table.label }}<div class="muted">{{ o.waiter.display_name }} · {{ o.created_at|date:"d.m H:i" }}</div></div><div class="order-row__right"><span class="chip">{{ o.get_status_display }}</span><div class="price">{{ o.total|money }} so‘m</div></div></div>
+{% empty %}<div class="empty"><p>Hali yo‘q.</p></div>{% endfor %}
+{% endblock %}

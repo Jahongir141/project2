@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load ui %}
+{% block subtitle %}Ofitsiant paneli{% endblock %}
+{% block nav %}<a class="linkbtn" href="{% url 'my_orders' %}">Buyurtmalarim</a>{% if user.is_admin_role %}<a class="linkbtn" href="{% url 'dashboard:home' %}">Dashboard</a>{% endif %}{% endblock %}
+{% block content %}
+<h1 class="greet">Assalomu alaykum, {{ user.display_name }}</h1>
+<h2 class="section-title">Sektorlar</h2>
+<div class="sector-list">
+  {% for section in sections %}
+  <a class="card sector-card" href="{% url 'sector_detail' section.pk %}">
+    <div>
+      <div class="sector-card__name">{{ section.name|upper }}</div>
+      <div class="sector-card__meta">{{ section.table_count }} joy</div>
+    </div>
+    <div class="sector-card__busy {% if section.busy_count %}is-busy{% endif %}">{{ section.busy_count }} band</div>
+  </a>
+  {% empty %}
+  <div class="empty"><p>Hozircha sektorlar yo‘q. Administrator sektor qo‘shishi kerak.</p></div>
+  {% endfor %}
+</div>
+{% endblock %}
